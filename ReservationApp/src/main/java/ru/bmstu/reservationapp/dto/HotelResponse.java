@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @Validated
 @Accessors(chain = true)
-public class HotelsDTO {
+public class HotelResponse {
     private UUID hotelUid;
     private String name;
     private String country;

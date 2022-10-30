@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bmstu.reservationapp.dto.HotelsDTO;
-import ru.bmstu.reservationapp.service.HotelsService;
+import ru.bmstu.reservationapp.dto.HotelResponse;
+import ru.bmstu.reservationapp.service.HotelService;
 
 import javax.websocket.server.PathParam;
 import java.util.HashMap;
@@ -22,8 +22,8 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/hotels")
-public class HotelsController {
-    private final HotelsService hotelsService;
+public class HotelController {
+    private final HotelService hotelsService;
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<Map<String, Object>> getHotels(@PathParam(value = "page") Integer page,
@@ -31,7 +31,7 @@ public class HotelsController {
         log.info(">>> Request to get all hotels was caught.");
 
         Pageable paging = PageRequest.of(page - 1, size);
-        Page<HotelsDTO> hotelsDTOPage = hotelsService.getHotels(paging);
+        Page<HotelResponse> hotelsDTOPage = hotelsService.getHotels(paging);
 
         Map<String, Object> response = new HashMap<>() {{
             put("page", page);
