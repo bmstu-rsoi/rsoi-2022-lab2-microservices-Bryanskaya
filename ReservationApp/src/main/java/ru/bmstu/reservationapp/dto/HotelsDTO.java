@@ -10,7 +10,6 @@ import java.util.UUID;
 @Validated
 @Accessors(chain = true)
 public class HotelsDTO {
-    private Integer id;
     private UUID hotelUid;
     private String name;
     private String country;
