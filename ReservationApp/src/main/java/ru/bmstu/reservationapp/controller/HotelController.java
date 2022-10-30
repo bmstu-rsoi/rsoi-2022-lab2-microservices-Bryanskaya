@@ -30,7 +30,7 @@ public class HotelController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<PaginationResponse> getHotels(@PathParam(value = "page") Integer page,
                                                      @PathParam(value = "size") Integer size) {
-        log.info(">>> Request to get all hotels was caught.");
+        log.info(">>> RESERVATION: Request to get all hotels was caught.");
 
         Pageable paging = PageRequest.of(page - 1, size);
         Page<HotelResponse> hotelsResponsePage = hotelsService.getHotels(paging);
