@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.bmstu.reservationapp.controller.converter.ResponseConverter;
 import ru.bmstu.reservationapp.dto.HotelResponse;
+import ru.bmstu.reservationapp.dto.PaginationResponse;
 import ru.bmstu.reservationapp.service.HotelService;
 
 import javax.websocket.server.PathParam;
@@ -26,22 +28,16 @@ public class HotelController {
     private final HotelService hotelsService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<Map<String, Object>> getHotels(@PathParam(value = "page") Integer page,
+    public ResponseEntity<PaginationResponse> getHotels(@PathParam(value = "page") Integer page,
                                                      @PathParam(value = "size") Integer size) {
         log.info(">>> Request to get all hotels was caught.");
 
         Pageable paging = PageRequest.of(page - 1, size);
-        Page<HotelResponse> hotelsDTOPage = hotelsService.getHotels(paging);
+        Page<HotelResponse> hotelsResponsePage = hotelsService.getHotels(paging);
 
-        Map<String, Object> response = new HashMap<>() {{
-            put("page", page);
-            put("pageSize", size);
-            put("totalElements", hotelsDTOPage.getTotalElements());
-            put("items", hotelsDTOPage.getContent());
-        }};
-
+        PaginationResponse paginationResponse = ResponseConverter.toPaginationResponse(page, size, hotelsResponsePage);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(response);
+                .body(paginationResponse);
     }
 }

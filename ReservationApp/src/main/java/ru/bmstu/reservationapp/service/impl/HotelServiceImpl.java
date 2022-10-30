@@ -18,7 +18,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Transactional(readOnly = true)
     public Page<HotelResponse> getHotels(Pageable pageable) {
-        return hotelRepository.findAll(pageable)
+        return hotelRepository
+                .findAll(pageable)
                 .map(HotelConverter::fromHotelsEntityToHotelsDTO);
     }
 }
