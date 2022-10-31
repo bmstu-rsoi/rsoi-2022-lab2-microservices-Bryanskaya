@@ -13,9 +13,9 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class ReservationResponse {
     private UUID reservationUid;
-    private HotelInfo hotel;
+    private Integer hotelId;
     private Timestamp startDate;
     private Timestamp endDate;
     private StatusEnum status;
-    private PaymentInfo payment;
+    private UUID paymentUid;
 }

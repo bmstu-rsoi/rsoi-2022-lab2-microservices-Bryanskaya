@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,6 +39,30 @@ public class GatewayController {
                         .queryParam("size", size)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .onStatus(HttpStatus::isError, error -> {
+                    throw new HotelServiceNotAvailableException(error.statusCode().toString());
+                })
+                .toEntity(PaginationResponse.class)
+                .onErrorMap(Throwable.class, error -> {
+                    throw new GatewayErrorException(error.getMessage());
+                })
+                .block();
+    }
+
+    @GetMapping(value = "/reservations", produces = "application/json")
+    public ResponseEntity<?> getReservationsByUsername(@RequestHeader(value = "X-User-Name") String username) {
+        log.info(">>> GATEWAY: Request to get all hotels was caught.");
+        log.info(username);
+
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("api/v1/reservations")
+                        .port("8070")
+                        .build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("X-User-Name", username)
                 .retrieve()
                 .onStatus(HttpStatus::isError, error -> {
                     throw new HotelServiceNotAvailableException(error.statusCode().toString());
