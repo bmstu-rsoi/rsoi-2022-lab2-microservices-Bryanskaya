@@ -10,11 +10,11 @@ import java.util.UUID;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Integer> {
-    @Query(value = "SELECT * FROM reservations WHERE username = ?1",
+    @Query(value = "SELECT * FROM reservation WHERE username = ?1",
             nativeQuery = true)
     List<ReservationEntity> getReservationsByUsername(String username);
 
-    @Query(value = "SELECT * FROM reservations WHERE username = ?1 and reservationUid = ?2",
+    @Query(value = "SELECT * FROM reservation WHERE username = ?1 and reservationUid = ?2",
             nativeQuery = true)
     ReservationEntity getReservationsByUsernameReservationUid(String username, UUID reservationUid);
 }
