@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.bmstu.gateway.controller.exception.GatewayErrorException;
 import ru.bmstu.gateway.controller.exception.HotelServiceNotAvailableException;
+import ru.bmstu.gateway.controller.exception.ReservationByUsernameNotFoundException;
 
 @ControllerAdvice
 public class ConrollerAdvisor {
@@ -28,6 +29,17 @@ public class ConrollerAdvisor {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(err);
+    }
+
+    @ExceptionHandler(ReservationByUsernameNotFoundException.class)
+    public ResponseEntity<?> handleReservationByUsernameNotFoundException(ReservationByUsernameNotFoundException ex) {
+        Error err = new Error()
+                .setMessage(HttpStatus.NOT_FOUND.toString())
+                .setDescription(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(err);
     }
 }
