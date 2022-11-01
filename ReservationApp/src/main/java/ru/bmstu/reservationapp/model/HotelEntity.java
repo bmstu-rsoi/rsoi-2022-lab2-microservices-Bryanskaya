@@ -13,7 +13,7 @@ import java.util.UUID;
 @Table(name = "hotels")
 @Accessors(chain = true)
 @NoArgsConstructor
-public class HotelsEntity {
+public class HotelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
