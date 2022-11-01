@@ -15,7 +15,7 @@ public class ReservationConverter {
                 .setHotelId(reservationEntity.getHotelId())
                 .setStartDate(reservationEntity.getStartDate())
                 .setEndDate(reservationEntity.getEndDate())
-                .setStatus(reservationEntity.getStatus())
+                .setStatus(StatusEnum.valueOf(reservationEntity.getStatus()))
                 .setReservationUid(reservationEntity.getPaymentUid());
     }
 }
