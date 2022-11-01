@@ -7,4 +7,5 @@ import ru.bmstu.reservationapp.dto.HotelResponse;
 
 public interface HotelService {
     Page<HotelResponse> getHotels(Pageable pageable);
+    HotelResponse getHotelByHotelId(Integer hotelId);
 }

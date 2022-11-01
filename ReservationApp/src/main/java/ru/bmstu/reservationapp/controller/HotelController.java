@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bmstu.reservationapp.controller.converter.ResponseConverter;
@@ -16,8 +17,6 @@ import ru.bmstu.reservationapp.dto.PaginationResponse;
 import ru.bmstu.reservationapp.service.HotelService;
 
 import javax.websocket.server.PathParam;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Slf4j
@@ -39,5 +38,14 @@ public class HotelController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(paginationResponse);
+    }
+
+    @GetMapping(value = "/{hotelId}", produces = "application/json")
+    public ResponseEntity<HotelResponse> getHotelByHotelId(@PathVariable Integer hotelId) {
+        log.info(">>> RESERVATION: Request to get hotel by hotelId={} was caught.", hotelId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(hotelsService.getHotelByHotelId(hotelId));
     }
 }

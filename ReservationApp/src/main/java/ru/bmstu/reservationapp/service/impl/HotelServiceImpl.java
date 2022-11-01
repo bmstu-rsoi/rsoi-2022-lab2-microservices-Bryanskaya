@@ -22,4 +22,10 @@ public class HotelServiceImpl implements HotelService {
                 .findAll(pageable)
                 .map(HotelConverter::fromHotelsEntityToHotelResponse);
     }
+
+    @Transactional(readOnly = true)
+    public HotelResponse getHotelByHotelId(Integer hotelId) {
+        return HotelConverter.fromHotelsEntityToHotelResponse(hotelRepository
+                .getHotelById(hotelId));
+    }
 }
