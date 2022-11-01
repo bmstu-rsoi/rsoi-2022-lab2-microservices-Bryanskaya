@@ -3,7 +3,7 @@ package ru.bmstu.reservationapp.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.bmstu.reservationapp.dto.ReservationResponse;
+import ru.bmstu.reservationapp.dto.ReservationDTO;
 import ru.bmstu.reservationapp.model.ReservationEntity;
 import ru.bmstu.reservationapp.repository.ReservationRepository;
 import ru.bmstu.reservationapp.service.ReservationService;
@@ -19,7 +19,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
 
     @Transactional(readOnly = true)
-    public List<ReservationResponse> getReservationsByUsername(String username) {
+    public List<ReservationDTO> getReservationsByUsername(String username) {
         return reservationRepository
                 .getReservationsByUsername(username)
                 .stream()
@@ -28,7 +28,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationResponse getReservationsByUsernameReservationUid(String username, UUID reservationUid) {
+    public ReservationDTO getReservationsByUsernameReservationUid(String username, UUID reservationUid) {
         ReservationEntity reservationEntity = reservationRepository.getReservationsByUsernameReservationUid(username, reservationUid);
         return ReservationConverter.fromReservationEntityToReservationResponse(reservationEntity);
     }

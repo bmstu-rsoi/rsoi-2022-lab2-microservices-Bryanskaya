@@ -1,11 +1,11 @@
 package ru.bmstu.reservationapp.service;
 
-import ru.bmstu.reservationapp.dto.ReservationResponse;
+import ru.bmstu.reservationapp.dto.ReservationDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ReservationService {
-    List<ReservationResponse> getReservationsByUsername(String username);
-    ReservationResponse getReservationsByUsernameReservationUid(String username, UUID reservationUid);
+    List<ReservationDTO> getReservationsByUsername(String username);
+    ReservationDTO getReservationsByUsernameReservationUid(String username, UUID reservationUid);
 }
