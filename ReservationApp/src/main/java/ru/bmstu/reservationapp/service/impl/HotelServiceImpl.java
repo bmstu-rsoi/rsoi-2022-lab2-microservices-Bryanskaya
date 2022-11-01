@@ -20,6 +20,6 @@ public class HotelServiceImpl implements HotelService {
     public Page<HotelResponse> getHotels(Pageable pageable) {
         return hotelRepository
                 .findAll(pageable)
-                .map(HotelConverter::fromHotelsEntityToHotelsDTO);
+                .map(HotelConverter::fromHotelsEntityToHotelResponse);
     }
 }

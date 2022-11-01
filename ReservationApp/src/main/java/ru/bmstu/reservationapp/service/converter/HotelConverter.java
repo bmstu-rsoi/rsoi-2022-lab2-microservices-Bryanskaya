@@ -4,7 +4,7 @@ import ru.bmstu.reservationapp.dto.HotelResponse;
 import ru.bmstu.reservationapp.model.HotelsEntity;
 
 public class HotelConverter {
-    public static HotelResponse fromHotelsEntityToHotelsDTO(HotelsEntity hotelsEntity) {
+    public static HotelResponse fromHotelsEntityToHotelResponse(HotelsEntity hotelsEntity) {
         return new HotelResponse()
                 .setHotelUid(hotelsEntity.getHotelUid())
                 .setName(hotelsEntity.getName())
