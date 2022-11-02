@@ -13,6 +13,6 @@ public class ReservationConverter {
                 .setStartDate(reservationEntity.getStartDate())
                 .setEndDate(reservationEntity.getEndDate())
                 .setStatus(StatusEnum.valueOf(reservationEntity.getStatus()))
-                .setReservationUid(reservationEntity.getPaymentUid());
+                .setPaymentUid(reservationEntity.getPaymentUid());
     }
 }
