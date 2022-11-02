@@ -8,7 +8,7 @@ public class HotelInfoConverter {
         return new HotelInfo()
                 .setHotelUid(hotelResponse.getHotelUid())
                 .setName(hotelResponse.getName())
-                .setFullAddress(hotelResponse.getAddress())
+                .setFullAddress(String.format("%s, %s, %s", hotelResponse.getCountry(), hotelResponse.getCity(), hotelResponse.getAddress()))
                 .setStars(hotelResponse.getStars());
     }
 }

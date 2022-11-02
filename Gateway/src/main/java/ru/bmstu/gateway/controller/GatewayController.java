@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.bmstu.gateway.controller.exception.GatewayErrorException;
-import ru.bmstu.gateway.controller.exception.HotelServiceNotAvailableException;
-import ru.bmstu.gateway.controller.exception.ReservationByUsernameNotFoundException;
+import ru.bmstu.gateway.controller.exception.*;
 import ru.bmstu.gateway.dto.*;
 import ru.bmstu.gateway.dto.converter.HotelInfoConverter;
 import ru.bmstu.gateway.dto.converter.ReservationResponseConverter;
@@ -21,6 +19,7 @@ import ru.bmstu.gateway.dto.converter.ReservationResponseConverter;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -65,8 +64,11 @@ public class GatewayController {
         ArrayList<ReservationResponse> reservationResponseList = new ArrayList<>();
         for (ReservationDTO reservation: reservationArr) {
             HotelInfo hotelInfo = _getHotelInfoByHotelId(reservation.getHotelId());
+            PaymentInfo paymentInfo = _getPaymentInfoByPaymentUid(reservation.getPaymentUid());
+            if (hotelInfo == null || paymentInfo == null)
+                throw new RelatedDataNotFoundException();
 
-            reservationResponseList.add(ReservationResponseConverter.toReservationResponse(reservation, hotelInfo));
+            reservationResponseList.add(ReservationResponseConverter.toReservationResponse(reservation, hotelInfo, paymentInfo));
         }
 
         return ResponseEntity
@@ -117,4 +119,24 @@ public class GatewayController {
         return HotelInfoConverter.
                 fromHotelResponseToHotelInfo(_getHotelResponseByHotelId(hotelId));
     }
+
+    private PaymentInfo _getPaymentInfoByPaymentUid(UUID paymentUid) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("api/v1/payments/{paymentUid}")
+                        .port("8060")
+                        .build(paymentUid))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .onStatus(HttpStatus::isError, error -> {
+                    throw new PaymentServiceNotAvailableException(error.statusCode().toString());
+                })
+                .bodyToMono(PaymentInfo.class)
+                .onErrorMap(Throwable.class, error -> {
+                    throw new GatewayErrorException(error.getMessage());
+                })
+                .block();
+    }
+
 }
