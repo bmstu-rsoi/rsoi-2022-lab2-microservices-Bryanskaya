@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer> {
-    @Query(value = "SELECT * FROM payments WHERE payment_uid = ?1")
+    @Query(value = "SELECT * FROM payments WHERE payment_uid = ?1",
+        nativeQuery = true)
     PaymentEntity getPaymentByUid(UUID paymentUid);
 }

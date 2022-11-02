@@ -9,6 +9,8 @@ import ru.bmstu.paymentapp.service.PaymentService;
 
 import java.util.UUID;
 
+import static ru.bmstu.paymentapp.service.converter.PaymentConverter.fromPaymentEntityToPaymentInfo;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -16,6 +18,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional(readOnly = true)
     public PaymentInfo getPaymentByUid(UUID paymentUid) {
-        return paymentRepository.getPaymentByUid(paymentUid);
+        return fromPaymentEntityToPaymentInfo(paymentRepository.getPaymentByUid(paymentUid));
     }
 }
