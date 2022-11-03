@@ -2,8 +2,6 @@ package ru.bmstu.gateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.experimental.Accessors;
-import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 import java.util.List;

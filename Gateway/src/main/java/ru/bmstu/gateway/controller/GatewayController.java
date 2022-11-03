@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.bmstu.gateway.controller.exception.data.RelatedDataNotFoundException;
+import ru.bmstu.gateway.controller.exception.data.RequestDataErrorException;
 import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameNotFoundException;
 import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameReservationUidNotFoundException;
 import ru.bmstu.gateway.controller.exception.service.GatewayErrorException;
 import ru.bmstu.gateway.controller.exception.service.HotelServiceNotAvailableException;
 import ru.bmstu.gateway.controller.exception.service.PaymentServiceNotAvailableException;
+import ru.bmstu.gateway.controller.exception.service.ReservationServiceNotAvailableException;
 import ru.bmstu.gateway.dto.*;
 import ru.bmstu.gateway.dto.converter.HotelInfoConverter;
 import ru.bmstu.gateway.dto.converter.ReservationResponseConverter;
@@ -106,7 +108,7 @@ public class GatewayController {
                 .header("X-User-Name", username)
                 .retrieve()
                 .onStatus(HttpStatus::isError, error -> {
-                    throw new HotelServiceNotAvailableException(error.statusCode().toString());
+                    throw new ReservationServiceNotAvailableException(error.statusCode().toString());
                 })
                 .bodyToMono(ReservationDTO[].class)
                 .onErrorMap(Throwable.class, error -> {
@@ -126,7 +128,7 @@ public class GatewayController {
                 .header("X-User-Name", username)
                 .retrieve()
                 .onStatus(HttpStatus::isError, error -> {
-                    throw new HotelServiceNotAvailableException(error.statusCode().toString());
+                    throw new ReservationServiceNotAvailableException(error.statusCode().toString());
                 })
                 .bodyToMono(ReservationDTO.class)
                 .onErrorMap(Throwable.class, error -> {
@@ -172,6 +174,34 @@ public class GatewayController {
                     throw new PaymentServiceNotAvailableException(error.statusCode().toString());
                 })
                 .bodyToMono(PaymentInfo.class)
+                .onErrorMap(Throwable.class, error -> {
+                    throw new GatewayErrorException(error.getMessage());
+                })
+                .block();
+    }
+
+
+    @PostMapping(value = "/reservations")
+    public void postReservation(@RequestHeader(value = "X-User-Name") String username,
+                                                     @RequestBody CreateReservationRequest request) {
+        log.info(">>> Request to create reservation was caught (username={}; data={}).", username, request.toString());
+
+        if (!request.isValid())
+            throw new RequestDataErrorException(request.toString());
+
+        webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("api/v1/reservations")
+                        .port("8070")
+                        .build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("X-User-Name", username)
+                .retrieve()
+                .onStatus(HttpStatus::isError, error -> {
+                    throw new ReservationServiceNotAvailableException(error.statusCode().toString());
+                })
+                .bodyToMono(CreateReservationResponse.class)
                 .onErrorMap(Throwable.class, error -> {
                     throw new GatewayErrorException(error.getMessage());
                 })
