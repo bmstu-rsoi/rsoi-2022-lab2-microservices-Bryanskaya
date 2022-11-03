@@ -10,6 +10,7 @@ import ru.bmstu.reservationapp.service.ReservationService;
 import ru.bmstu.reservationapp.service.converter.ReservationConverter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public ReservationDTO getReservationsByUsernameReservationUid(String username, UUID reservationUid) {
         ReservationEntity reservationEntity = reservationRepository.getReservationsByUsernameReservationUid(username, reservationUid);
-        return ReservationConverter.fromReservationEntityToReservationResponse(reservationEntity);
+        return (reservationEntity == null) ? null : ReservationConverter.fromReservationEntityToReservationResponse(reservationEntity);
     }
 }
