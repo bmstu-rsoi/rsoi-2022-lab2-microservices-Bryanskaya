@@ -10,6 +10,8 @@ import ru.bmstu.reservationapp.repository.HotelRepository;
 import ru.bmstu.reservationapp.service.HotelService;
 import ru.bmstu.reservationapp.service.converter.HotelConverter;
 
+import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +29,11 @@ public class HotelServiceImpl implements HotelService {
     public HotelResponse getHotelByHotelId(Integer hotelId) {
         return HotelConverter.fromHotelsEntityToHotelResponse(hotelRepository
                 .getHotelById(hotelId));
+    }
+
+    @Transactional(readOnly = true)
+    public HotelResponse getHotelByHotelUid(UUID hotelUid) {
+        return HotelConverter.fromHotelsEntityToHotelResponse(hotelRepository
+                .getHotelByUid(hotelUid));
     }
 }
