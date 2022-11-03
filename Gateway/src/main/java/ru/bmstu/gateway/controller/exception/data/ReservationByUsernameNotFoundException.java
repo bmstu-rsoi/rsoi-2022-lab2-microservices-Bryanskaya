@@ -1,4 +1,4 @@
-package ru.bmstu.gateway.controller.exception;
+package ru.bmstu.gateway.controller.exception.data;
 
 public class ReservationByUsernameNotFoundException extends RuntimeException {
     public static String MSG = "GATEWAY: reservation for username=%s was not found.";

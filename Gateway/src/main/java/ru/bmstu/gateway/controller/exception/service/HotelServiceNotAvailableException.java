@@ -1,4 +1,4 @@
-package ru.bmstu.gateway.controller.exception;
+package ru.bmstu.gateway.controller.exception.service;
 
 
 public class HotelServiceNotAvailableException extends RuntimeException {

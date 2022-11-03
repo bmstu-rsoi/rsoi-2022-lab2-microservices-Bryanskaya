@@ -8,7 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.bmstu.gateway.controller.exception.*;
+import ru.bmstu.gateway.controller.exception.data.RelatedDataNotFoundException;
+import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameNotFoundException;
+import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameReservationUidNotFoundException;
+import ru.bmstu.gateway.controller.exception.service.GatewayErrorException;
+import ru.bmstu.gateway.controller.exception.service.HotelServiceNotAvailableException;
+import ru.bmstu.gateway.controller.exception.service.PaymentServiceNotAvailableException;
 import ru.bmstu.gateway.dto.*;
 import ru.bmstu.gateway.dto.converter.HotelInfoConverter;
 import ru.bmstu.gateway.dto.converter.ReservationResponseConverter;
@@ -66,7 +71,7 @@ public class GatewayController {
                 .status(HttpStatus.OK)
                 .body(reservationResponseList);
     }
-    
+
     @GetMapping(value = "/reservations/{reservationUid}", produces = "application/json")
     public ResponseEntity<?> getReservationsByUsernameReservationUid(@RequestHeader(value = "X-User-Name") String username,
                                                                      @PathVariable(value = "reservationUid") String reservationUid) {

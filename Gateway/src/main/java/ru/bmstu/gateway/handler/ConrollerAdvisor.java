@@ -4,7 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.bmstu.gateway.controller.exception.*;
+import ru.bmstu.gateway.controller.exception.data.RelatedDataNotFoundException;
+import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameNotFoundException;
+import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameReservationUidNotFoundException;
+import ru.bmstu.gateway.controller.exception.service.GatewayErrorException;
+import ru.bmstu.gateway.controller.exception.service.HotelServiceNotAvailableException;
+import ru.bmstu.gateway.controller.exception.service.PaymentServiceNotAvailableException;
 
 @ControllerAdvice
 public class ConrollerAdvisor {
