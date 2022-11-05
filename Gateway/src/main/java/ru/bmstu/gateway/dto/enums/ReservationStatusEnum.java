@@ -3,7 +3,7 @@ package ru.bmstu.gateway.dto.enums;
 public enum ReservationStatusEnum {
     PAID("PAID"),
     REVERSED("REVERSED"),
-    CANCELLED("CANCELLED");
+    CANCELED("CANCELED");
 
     private String name;
 
