@@ -25,6 +25,8 @@ import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static ru.bmstu.gateway.config.AppConfig.*;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
@@ -32,21 +34,6 @@ public class GatewayController {
     @Resource
     private WebClient webClient;
 
-    @Value(value = "${path.service.hotel}")
-    private String pathHotel;
-    @Value(value = "${path.service.loyalty}")
-    private String pathLoyalty;
-    @Value(value = "${path.service.reservation}")
-    private String pathReservation;
-    @Value(value = "${path.service.payment}")
-    private String pathPayment;
-
-    @Value(value = "${port.service.hotel}")
-    private String portHotel;
-    @Value(value = "${port.service.loyalty}")
-    private String portLoyalty;
-    @Value(value = "${port.service.payment}")
-    private String portPayment;
 
     @GetMapping(value = "/hotels", produces = "application/json")
     public ResponseEntity<?> getHotels(@PathParam(value = "page") Integer page,
