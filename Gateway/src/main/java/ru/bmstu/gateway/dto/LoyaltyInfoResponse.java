@@ -8,7 +8,7 @@ import ru.bmstu.gateway.dto.enums.UserStatusEnum;
 @Data
 @Validated
 @Accessors(chain = true)
-public class LoyaltyIntoResponse {
+public class LoyaltyInfoResponse {
     private UserStatusEnum status;
     private Integer discount;
     private Integer reservationCount;
