@@ -1,9 +1,10 @@
 package ru.bmstu.paymentapp.service;
 
-import ru.bmstu.paymentapp.dto.PaymentInfo;
+import ru.bmstu.paymentapp.dto.PaymentDTO;
 
 import java.util.UUID;
 
 public interface PaymentService {
-    PaymentInfo getPaymentByUid(UUID paymentUid);
+    PaymentDTO getPaymentByUid(UUID paymentUid);
+    PaymentDTO postPayment(Integer price);
 }

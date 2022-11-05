@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "payments")
+@Table(name = "payment")
 @Accessors(chain = true)
 @NoArgsConstructor
 public class PaymentEntity {
