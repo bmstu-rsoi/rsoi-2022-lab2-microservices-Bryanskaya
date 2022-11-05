@@ -28,6 +28,15 @@ public class LoyaltyController {
                 .body(loyaltyService.getDiscountByUsername(username));
     }
 
+    @GetMapping(value = "/user", produces = "application/json")
+    public ResponseEntity<?> getLoyaltyInfoResponseByUsername(@RequestHeader(value = "X-User-Name") String username) {
+        log.info(">>> LOYALTY: Request to get username's={} loyalty info was caught.", username);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loyaltyService.getLoyaltyInfoResponseByUsername(username));
+    }
+
     @GetMapping(value = "/update", produces = "application/json")
     public ResponseEntity<Integer> getReservationUpdatedPrice(@PathParam(value = "price") Integer price,
                                                         @PathParam(value = "discount") Integer discount) {

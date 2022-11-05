@@ -11,5 +11,9 @@ public interface LoyaltyRepository extends JpaRepository<LoyaltyEntity, Integer>
 
     @Query(value = "SELECT * FROM loyalty WHERE username = ?1",
         nativeQuery = true)
+    LoyaltyEntity getLoyaltyInfoResponseByUsername(String username);
+
+    @Query(value = "SELECT * FROM loyalty WHERE username = ?1",
+        nativeQuery = true)
     LoyaltyEntity getLoyaltyEntityByUsername(String username);
 }

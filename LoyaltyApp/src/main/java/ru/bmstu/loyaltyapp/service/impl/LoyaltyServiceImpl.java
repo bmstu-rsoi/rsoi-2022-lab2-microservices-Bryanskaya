@@ -6,10 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.bmstu.loyaltyapp.dto.LoyaltyDTO;
 import ru.bmstu.loyaltyapp.dto.LoyaltyIntoResponse;
 import ru.bmstu.loyaltyapp.dto.enums.StatusEnum;
-import ru.bmstu.loyaltyapp.model.LoyaltyEntity;
 import ru.bmstu.loyaltyapp.repository.LoyaltyRepository;
 import ru.bmstu.loyaltyapp.service.LoyaltyService;
 import ru.bmstu.loyaltyapp.service.converter.LoyaltyConverter;
+
+import static ru.bmstu.loyaltyapp.service.converter.LoyaltyConverter.fromLoyaltyDTOToLoyaltyInfoResponse;
+import static ru.bmstu.loyaltyapp.service.converter.LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO;
 
 
 @Service
@@ -23,13 +25,19 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         return loyaltyRepository.getDiscountByUsername(username);
     }
 
+    @Transactional(readOnly = true)
+    public LoyaltyIntoResponse getLoyaltyInfoResponseByUsername(String username) {
+        LoyaltyDTO loyaltyDTO = fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyInfoResponseByUsername(username));
+        return fromLoyaltyDTOToLoyaltyInfoResponse(loyaltyDTO);
+    }
+
     public Integer getReservationUpdatedPrice(Integer price, Integer discount) {
         return (int)(price * (1 - discount * 0.01));
     }
 
     @Transactional
     public LoyaltyIntoResponse updateReservationCount(String username) {
-        LoyaltyDTO loyaltyDTO = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyEntityByUsername(username));
+        LoyaltyDTO loyaltyDTO = fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyEntityByUsername(username));
         int reservationCount = loyaltyDTO.getReservationCount() + 1;
 
         if (reservationCount == 20)
@@ -40,14 +48,14 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         loyaltyDTO.setReservationCount(reservationCount);
         loyaltyDTO.setDiscount(StatusEnum.convert.get(loyaltyDTO.getStatus()));
 
-        LoyaltyDTO res = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository
+        LoyaltyDTO res = fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository
                 .saveAndFlush(LoyaltyConverter.fromLoyaltyDTOToLoyaltyEntity(loyaltyDTO)));
-        return LoyaltyConverter.fromLoyaltyDTOToLoyaltyInfoResponse(res);
+        return fromLoyaltyDTOToLoyaltyInfoResponse(res);
     }
 
     @Transactional
     public LoyaltyIntoResponse cancelReservationCount(String username) {
-        LoyaltyDTO loyaltyDTO = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyEntityByUsername(username));
+        LoyaltyDTO loyaltyDTO = fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyEntityByUsername(username));
         int reservationCount = loyaltyDTO.getReservationCount() - 1;
 
         if (reservationCount == 19)
@@ -58,8 +66,8 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         loyaltyDTO.setReservationCount(reservationCount);
         loyaltyDTO.setDiscount(StatusEnum.convert.get(loyaltyDTO.getStatus()));
 
-        LoyaltyDTO res = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository
+        LoyaltyDTO res = fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository
                 .saveAndFlush(LoyaltyConverter.fromLoyaltyDTOToLoyaltyEntity(loyaltyDTO)));
-        return LoyaltyConverter.fromLoyaltyDTOToLoyaltyInfoResponse(res);
+        return fromLoyaltyDTOToLoyaltyInfoResponse(res);
     }
 }
