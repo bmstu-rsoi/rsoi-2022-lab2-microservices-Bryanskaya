@@ -44,4 +44,22 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 .saveAndFlush(LoyaltyConverter.fromLoyaltyDTOToLoyaltyEntity(loyaltyDTO)));
         return LoyaltyConverter.fromLoyaltyDTOToLoyaltyInfoResponse(res);
     }
+
+    @Transactional
+    public LoyaltyIntoResponse cancelReservationCount(String username) {
+        LoyaltyDTO loyaltyDTO = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository.getLoyaltyEntityByUsername(username));
+        int reservationCount = loyaltyDTO.getReservationCount() - 1;
+
+        if (reservationCount == 19)
+            loyaltyDTO.setStatus(loyaltyDTO.getStatus().prev());
+        else if (reservationCount == 9)
+            loyaltyDTO.setStatus(loyaltyDTO.getStatus().prev());
+
+        loyaltyDTO.setReservationCount(reservationCount);
+        loyaltyDTO.setDiscount(StatusEnum.convert.get(loyaltyDTO.getStatus()));
+
+        LoyaltyDTO res = LoyaltyConverter.fromLoyaltyEntityToLoyaltyDTO(loyaltyRepository
+                .saveAndFlush(LoyaltyConverter.fromLoyaltyDTOToLoyaltyEntity(loyaltyDTO)));
+        return LoyaltyConverter.fromLoyaltyDTOToLoyaltyInfoResponse(res);
+    }
 }

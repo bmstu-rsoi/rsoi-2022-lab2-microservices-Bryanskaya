@@ -28,4 +28,13 @@ public enum StatusEnum {
         }
         return res;
     }
+
+    public StatusEnum prev() {
+        StatusEnum res = null;
+        switch (this) {
+            case GOLD -> res = SILVER;
+            case SILVER -> res = BRONZE;
+        }
+        return res;
+    }
 }

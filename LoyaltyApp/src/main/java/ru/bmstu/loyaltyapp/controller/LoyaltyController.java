@@ -46,4 +46,13 @@ public class LoyaltyController {
                 .status(HttpStatus.OK)
                 .body(loyaltyService.updateReservationCount(username));
     }
+
+    @DeleteMapping(produces = "application/json")
+    public ResponseEntity<LoyaltyIntoResponse> cancelReservationCount(@RequestHeader(value = "X-User-Name") String username) {
+        log.info(">>> LOYALTY: Request to cancel reservation count user={} was caught.", username);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loyaltyService.cancelReservationCount(username));
+    }
 }
