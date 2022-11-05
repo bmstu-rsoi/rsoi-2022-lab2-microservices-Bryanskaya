@@ -400,7 +400,7 @@ public class GatewayController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping(value = "/reservations/{reservationUid}", produces = "application/json")
     public void cancelReservation(@RequestHeader(value = "X-User-Name") String username,
-                                               @PathVariable(value = "reservationUid") UUID reservationUid) {
+                                  @PathVariable(value = "reservationUid") UUID reservationUid) {
         log.info(">>> GATEWAY: Request to delete reservation was caught (username={}; reservationUid={}).", username, reservationUid);
 
         _cancelReservation(username, reservationUid);
@@ -468,6 +468,13 @@ public class GatewayController {
                     throw new GatewayErrorException(error.getMessage());
                 })
                 .block();
+    }
+
+    @GetMapping(value = "/loyalty", produces = "application/json")
+    public ResponseEntity<?> getLoyaltyInfoResponseByUsername(@RequestHeader(value = "X-User-Name") String username) {
+        return ResponseEntity
+                .ok()
+                .body(_getLoyaltyInfoResponseByUsername(username));
     }
 
 }
