@@ -102,7 +102,7 @@ public class GatewayController {
         log.info(">>> GATEWAY: Request to get all reservations by username={} was caught.", username);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .ok()
                 .body(_getReservationsList(username));
     }
 
@@ -128,7 +128,7 @@ public class GatewayController {
             throw new ReservationByUsernameReservationUidNotFoundException(username, reservationUid);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .ok()
                 .body(_getReservationResponse(reservation));
     }
 
@@ -239,11 +239,11 @@ public class GatewayController {
                 _getHotelIdByHotelUid(request.getHotelUid())));
 
         CreateReservationResponse createReservationResponse = ReservationConverter
-                .fromReservationDTOToCreateReservationResponse(reservationDTO, paymentDTO.getPaymentUid(),
+                .fromReservationDTOToCreateReservationResponse(reservationDTO, request.getHotelUid(),
                         loyaltyInfoResponse.getDiscount(), PaymentConverter.fromPaymentDTOToPaymentInfo(paymentDTO));
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .ok()
                 .body(createReservationResponse);
     }
 
@@ -476,5 +476,4 @@ public class GatewayController {
                 .ok()
                 .body(_getLoyaltyInfoResponseByUsername(username));
     }
-
 }
