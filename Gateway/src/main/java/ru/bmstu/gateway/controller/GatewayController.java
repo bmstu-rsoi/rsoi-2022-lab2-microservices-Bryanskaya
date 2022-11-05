@@ -397,7 +397,7 @@ public class GatewayController {
     }
 
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/reservations/{reservationUid}", produces = "application/json")
     public void cancelReservation(@RequestHeader(value = "X-User-Name") String username,
                                   @PathVariable(value = "reservationUid") UUID reservationUid) {
