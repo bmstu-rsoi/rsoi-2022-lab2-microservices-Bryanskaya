@@ -3,7 +3,7 @@ package ru.bmstu.paymentapp.dto.enums;
 public enum StatusEnum {
     PAID("PAID"),
     REVERSED("REVERSED"),
-    CANCELLED("CANCELLED");
+    CANCELED("CANCELED");
 
     private String name;
 
