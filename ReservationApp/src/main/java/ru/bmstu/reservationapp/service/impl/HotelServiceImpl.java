@@ -11,7 +11,7 @@ import ru.bmstu.reservationapp.repository.HotelRepository;
 import ru.bmstu.reservationapp.service.HotelService;
 import ru.bmstu.reservationapp.service.converter.HotelConverter;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +46,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Transactional(readOnly = true)
-    public Integer getHotelDatePrice(UUID hotelUid, Timestamp startDate, Timestamp endDate) {
+    public Integer getHotelDatePrice(UUID hotelUid, Date startDate, Date endDate) {
         HotelEntity hotelEntity = hotelRepository.getHotelByUid(hotelUid);
         if (hotelEntity == null)
             return null;

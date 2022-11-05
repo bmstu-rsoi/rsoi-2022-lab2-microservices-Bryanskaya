@@ -14,7 +14,7 @@ import ru.bmstu.reservationapp.dto.PaginationResponse;
 import ru.bmstu.reservationapp.service.HotelService;
 
 import javax.websocket.server.PathParam;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.UUID;
 
 
@@ -61,8 +61,8 @@ public class HotelController {
 
     @GetMapping(value = "/{hotelUid}/price", produces = "application/json")
     public ResponseEntity<Integer> getHotelDatePrice(@PathVariable UUID hotelUid,
-                                                     @PathParam(value = "startDate") Timestamp startDate,
-                                                     @PathParam(value = "endDate") Timestamp endDate) {
+                                                     @PathParam(value = "startDate") Date startDate,
+                                                     @PathParam(value = "endDate") Date endDate) {
         log.info(">>> Request to get reservation's price was caught, hotelUid={}, startDate={}; endDate={}).",
                 hotelUid, startDate, endDate);
 

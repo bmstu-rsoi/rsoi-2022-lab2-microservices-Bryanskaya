@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 import org.springframework.validation.annotation.Validated;
 import ru.bmstu.gateway.dto.enums.ReservationStatusEnum;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.UUID;
 
 @Data
@@ -14,8 +14,8 @@ import java.util.UUID;
 public class CreateReservationResponse {
     private UUID reservationUid;
     private UUID hotelUid;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    private Date startDate;
+    private Date endDate;
     private Integer discount;
     private ReservationStatusEnum status;
     private PaymentInfo payment;
