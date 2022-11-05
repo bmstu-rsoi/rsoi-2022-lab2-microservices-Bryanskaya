@@ -47,6 +47,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathHotel + "/all")
                         .port(appParams.portHotel)
                         .queryParam("page", page)
@@ -81,6 +82,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostLoyalty)
                         .path(appParams.pathLoyalty + "/user")
                         .port(appParams.portLoyalty)
                         .build())
@@ -145,6 +147,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathReservation)
                         .port(appParams.portHotel)
                         .build())
@@ -165,6 +168,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathReservation + "/{reservationUid}")
                         .port(appParams.portHotel)
                         .build(reservationUid))
@@ -185,6 +189,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathHotel + "/{hotelId}")
                         .port(appParams.portHotel)
                         .build(hotelId))
@@ -209,6 +214,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostPayment)
                         .path(appParams.pathPayment + "/{paymentUid}")
                         .port(appParams.portPayment)
                         .build(paymentUid))
@@ -257,6 +263,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathHotel + "/{hotelUid}/price")
                         .port(appParams.portHotel)
                         .queryParam("startDate", request.getStartDate())
@@ -279,6 +286,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostLoyalty)
                         .path(appParams.pathLoyalty)
                         .port(appParams.portLoyalty)
                         .build())
@@ -299,6 +307,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostLoyalty)
                         .path(appParams.pathLoyalty + "/update")
                         .port(appParams.portLoyalty)
                         .queryParam("price", price)
@@ -320,6 +329,7 @@ public class GatewayController {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostPayment)
                         .path(appParams.pathPayment)
                         .port(appParams.portPayment)
                         .queryParam("price", price)
@@ -340,6 +350,7 @@ public class GatewayController {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostLoyalty)
                         .path(appParams.pathLoyalty)
                         .port(appParams.portLoyalty)
                         .build())
@@ -360,6 +371,7 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathHotel + "/{hotelUid}/id")
                         .port(appParams.portHotel)
                         .build(hotelUid))
@@ -379,6 +391,7 @@ public class GatewayController {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostHotel)
                         .path(appParams.pathReservation)
                         .port(appParams.portHotel)
                         .build())
@@ -415,6 +428,7 @@ public class GatewayController {
         webClient
             .delete()
             .uri(uriBuilder -> uriBuilder
+                    .host(appParams.hostHotel)
                     .path(appParams.pathReservation + "/{reservationUid}")
                     .port(appParams.portHotel)
                     .build(reservationUid))
@@ -435,6 +449,7 @@ public class GatewayController {
         webClient
             .delete()
             .uri(uriBuilder -> uriBuilder
+                    .host(appParams.hostPayment)
                     .path(appParams.pathPayment + "/{paymentUid}")
                     .port(appParams.portPayment)
                     .build(paymentUid))
@@ -454,6 +469,7 @@ public class GatewayController {
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
+                        .host(appParams.hostLoyalty)
                         .path(appParams.pathLoyalty)
                         .port(appParams.portLoyalty)
                         .build())

@@ -5,6 +5,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AppParams {
+    @Value(value = "${host.service.hotel:localhost}")
+    public String hostHotel;
+    @Value(value = "${host.service.loyalty:localhost}")
+    public String hostLoyalty;
+    @Value(value = "${host.service.payment:localhost}")
+    public String hostPayment;
+
     @Value(value = "${path.service.hotel}")
     public String pathHotel;
     @Value(value = "${path.service.loyalty}")
