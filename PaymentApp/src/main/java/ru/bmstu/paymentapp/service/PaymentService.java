@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface PaymentService {
     PaymentDTO getPaymentByUid(UUID paymentUid);
     PaymentDTO postPayment(Integer price);
+    void cancelPayment(UUID paymentUid);
 }

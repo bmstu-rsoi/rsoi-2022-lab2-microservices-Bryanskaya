@@ -35,4 +35,12 @@ public class PaymentController {
                 .status(HttpStatus.OK)
                 .body(paymentService.postPayment(price));
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/{paymentUid}", produces = "application/json")
+    public void cancelPayment(@PathVariable(value = "paymentUid") UUID paymentUid) {
+        log.info(">>> PAYMENT: Request to cancel payment={} was caught.", paymentUid);
+
+        paymentService.cancelPayment(paymentUid);
+    }
 }
