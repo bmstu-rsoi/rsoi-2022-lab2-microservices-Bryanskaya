@@ -1,4 +1,3 @@
-server.port: ${PORT:8060}
 spring:
   profiles:
     active: local
