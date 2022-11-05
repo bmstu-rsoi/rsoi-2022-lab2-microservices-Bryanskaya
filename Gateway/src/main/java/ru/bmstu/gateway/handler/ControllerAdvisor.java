@@ -4,14 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.bmstu.gateway.controller.exception.data.RelatedDataNotFoundException;
-import ru.bmstu.gateway.controller.exception.data.RequestDataErrorException;
-import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameNotFoundException;
-import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameReservationUidNotFoundException;
-import ru.bmstu.gateway.controller.exception.service.GatewayErrorException;
-import ru.bmstu.gateway.controller.exception.service.HotelServiceNotAvailableException;
-import ru.bmstu.gateway.controller.exception.service.PaymentServiceNotAvailableException;
-import ru.bmstu.gateway.controller.exception.service.ReservationServiceNotAvailableException;
+import ru.bmstu.gateway.controller.exception.data.*;
+import ru.bmstu.gateway.controller.exception.service.*;
 
 @ControllerAdvice
 public class ControllerAdvisor {
@@ -39,6 +33,17 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(ReservationServiceNotAvailableException.class)
     public ResponseEntity<?> handleReservationServiceNotAvailableException(ReservationServiceNotAvailableException ex) {
+        Error err = new Error()
+                .setMessage(ex.code)
+                .setDescription(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.valueOf(ex.code))
+                .body(err);
+    }
+
+    @ExceptionHandler(LoyaltyServiceNotAvailableException.class)
+    public ResponseEntity<?> handleLoyaltyServiceNotAvailableException(LoyaltyServiceNotAvailableException ex) {
         Error err = new Error()
                 .setMessage(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .setDescription(ex.getMessage());
