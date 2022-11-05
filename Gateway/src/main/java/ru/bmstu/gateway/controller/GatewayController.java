@@ -2,7 +2,7 @@ package ru.bmstu.gateway.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.bmstu.gateway.config.AppParams;
 import ru.bmstu.gateway.controller.exception.data.RelatedDataNotFoundException;
 import ru.bmstu.gateway.controller.exception.data.RequestDataErrorException;
 import ru.bmstu.gateway.controller.exception.data.ReservationByUsernameNotFoundException;
@@ -25,14 +26,15 @@ import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static ru.bmstu.gateway.config.AppConfig.*;
-
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class GatewayController {
     @Resource
     private WebClient webClient;
+
+    @Autowired
+    private AppParams appParams;
 
 
     @GetMapping(value = "/hotels", produces = "application/json")
@@ -43,8 +45,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathHotel + "/all")
-                        .port(portHotel)
+                        .path(appParams.pathHotel + "/all")
+                        .port(appParams.portHotel)
                         .queryParam("page", page)
                         .queryParam("size", size)
                         .build())
@@ -78,11 +80,11 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/reservations/{reservationUid}", produces = "application/json")
-    public ResponseEntity<?> getReservationsByUsernameReservationUid(@RequestHeader(value = "X-User-Name") String username,
-                                                                     @PathVariable(value = "reservationUid") String reservationUid) {
+    public ResponseEntity<?> getReservationByUsernameReservationUid(@RequestHeader(value = "X-User-Name") String username,
+                                                                    @PathVariable(value = "reservationUid") UUID reservationUid) {
         log.info(">>> GATEWAY: Request to get all reservations by username={} and reservationUid={} was caught.", username, reservationUid);
 
-        ReservationDTO reservation = _getReservationsArrByUsernameReservationUid(username, reservationUid);
+        ReservationDTO reservation = _getReservationByUsernameReservationUid(username, reservationUid);
         if (reservation == null)
             throw new ReservationByUsernameReservationUidNotFoundException(username, reservationUid);
 
@@ -104,8 +106,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathReservation)
-                        .port(portHotel)
+                        .path(appParams.pathReservation)
+                        .port(appParams.portHotel)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-User-Name", username)
@@ -120,12 +122,12 @@ public class GatewayController {
                 .block();
     }
 
-    private ReservationDTO _getReservationsArrByUsernameReservationUid(String username, String reservationUid) {
+    private ReservationDTO _getReservationByUsernameReservationUid(String username, UUID reservationUid) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathReservation + "/{reservationUid}")
-                        .port(portHotel)
+                        .path(appParams.pathReservation + "/{reservationUid}")
+                        .port(appParams.portHotel)
                         .build(reservationUid))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-User-Name", username)
@@ -144,8 +146,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathHotel + "/{hotelId}")
-                        .port(portHotel)
+                        .path(appParams.pathHotel + "/{hotelId}")
+                        .port(appParams.portHotel)
                         .build(hotelId))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
@@ -168,8 +170,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathPayment + "/{paymentUid}")
-                        .port(portPayment)
+                        .path(appParams.pathPayment + "/{paymentUid}")
+                        .port(appParams.portPayment)
                         .build(paymentUid))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
@@ -193,13 +195,13 @@ public class GatewayController {
 
         Integer reservationPrice = _getReservationPrice(username, request);
         PaymentDTO paymentDTO = _postPayment(reservationPrice);
-        LoyaltyIntoResponse loyaltyIntoResponse = _updateReservationCount(username);
+        LoyaltyInfoResponse loyaltyInfoResponse = _updateReservationCount(username);
         ReservationDTO reservationDTO = _postReservation(username, ReservationConverter.toReservationDTO(paymentDTO, request,
                 _getHotelIdByHotelUid(request.getHotelUid())));
 
         CreateReservationResponse createReservationResponse = ReservationConverter
                 .fromReservationDTOToCreateReservationResponse(reservationDTO, paymentDTO.getPaymentUid(),
-                        loyaltyIntoResponse.getDiscount(), PaymentConverter.fromPaymentDTOToPaymentInfo(paymentDTO));
+                        loyaltyInfoResponse.getDiscount(), PaymentConverter.fromPaymentDTOToPaymentInfo(paymentDTO));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -216,8 +218,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathHotel + "/{hotelUid}/price")
-                        .port(portHotel)
+                        .path(appParams.pathHotel + "/{hotelUid}/price")
+                        .port(appParams.portHotel)
                         .queryParam("startDate", request.getStartDate())
                         .queryParam("endDate", request.getEndDate())
                         .build(request.getHotelUid()))
@@ -238,8 +240,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathLoyalty)
-                        .port(portLoyalty)
+                        .path(appParams.pathLoyalty)
+                        .port(appParams.portLoyalty)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-User-Name", username)
@@ -258,8 +260,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathLoyalty + "/update")
-                        .port(portLoyalty)
+                        .path(appParams.pathLoyalty + "/update")
+                        .port(appParams.portLoyalty)
                         .queryParam("price", price)
                         .queryParam("discount", discount)
                         .build())
@@ -279,8 +281,8 @@ public class GatewayController {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathPayment)
-                        .port(portPayment)
+                        .path(appParams.pathPayment)
+                        .port(appParams.portPayment)
                         .queryParam("price", price)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -295,12 +297,12 @@ public class GatewayController {
                 .block();
     }
 
-    private LoyaltyIntoResponse _updateReservationCount(String username) {
+    private LoyaltyInfoResponse _updateReservationCount(String username) {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathLoyalty)
-                        .port(portLoyalty)
+                        .path(appParams.pathLoyalty)
+                        .port(appParams.portLoyalty)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-User-Name", username)
@@ -308,7 +310,7 @@ public class GatewayController {
                 .onStatus(HttpStatus::isError, error -> {
                     throw new LoyaltyServiceNotAvailableException(error.statusCode().toString());
                 })
-                .bodyToMono(LoyaltyIntoResponse.class)
+                .bodyToMono(LoyaltyInfoResponse.class)
                 .onErrorMap(Throwable.class, error -> {
                     throw new GatewayErrorException(error.getMessage());
                 })
@@ -319,8 +321,8 @@ public class GatewayController {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathHotel + "/{hotelUid}/id")
-                        .port(portHotel)
+                        .path(appParams.pathHotel + "/{hotelUid}/id")
+                        .port(appParams.portHotel)
                         .build(hotelUid))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
@@ -338,8 +340,8 @@ public class GatewayController {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(pathReservation)
-                        .port(portHotel)
+                        .path(appParams.pathReservation)
+                        .port(appParams.portHotel)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-User-Name", username)
@@ -349,6 +351,80 @@ public class GatewayController {
                     throw new PaymentServiceNotAvailableException(error.statusCode().toString());
                 })
                 .bodyToMono(ReservationDTO.class)
+                .onErrorMap(Throwable.class, error -> {
+                    throw new GatewayErrorException(error.getMessage());
+                })
+                .block();
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/reservations/{reservationUid}", produces = "application/json")
+    public void cancelReservation(@RequestHeader(value = "X-User-Name") String username,
+                                               @PathVariable(value = "reservationUid") UUID reservationUid) {
+        log.info(">>> GATEWAY: Request to delete reservation was caught (username={}; reservationUid={}).", username, reservationUid);
+
+        _cancelReservation(username, reservationUid);
+        ReservationDTO reservationDTO = _getReservationByUsernameReservationUid(username, reservationUid);
+        if (reservationDTO == null) return;
+
+        _cancelPayment(reservationDTO.getPaymentUid());
+        LoyaltyInfoResponse loyaltyInfoResponse = _cancelLoyalty(username);
+    }
+
+    private void _cancelReservation(String username, UUID reservationUid) {
+        webClient
+            .delete()
+            .uri(uriBuilder -> uriBuilder
+                    .path(appParams.pathReservation + "/{reservationUid}")
+                    .port(appParams.portHotel)
+                    .build(reservationUid))
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .header("X-User-Name", username)
+            .retrieve()
+            .onStatus(HttpStatus::isError, error -> {
+                throw new ReservationServiceNotAvailableException(error.statusCode().toString());
+            })
+            .bodyToMono(Void.class)
+            .onErrorMap(Throwable.class, error -> {
+                throw new GatewayErrorException(error.getMessage());
+            })
+            .block();
+    }
+
+    private void _cancelPayment(UUID paymentUid) {
+        webClient
+            .delete()
+            .uri(uriBuilder -> uriBuilder
+                    .path(appParams.pathPayment + "/{paymentUid}")
+                    .port(appParams.portPayment)
+                    .build(paymentUid))
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .retrieve()
+            .onStatus(HttpStatus::isError, error -> {
+                throw new PaymentServiceNotAvailableException(error.statusCode().toString());
+            })
+            .bodyToMono(Void.class)
+            .onErrorMap(Throwable.class, error -> {
+                throw new GatewayErrorException(error.getMessage());
+            })
+            .block();
+    }
+
+    private LoyaltyInfoResponse _cancelLoyalty(String username) {
+        return webClient
+                .delete()
+                .uri(uriBuilder -> uriBuilder
+                        .path(appParams.pathLoyalty)
+                        .port(appParams.portLoyalty)
+                        .build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("X-User-Name", username)
+                .retrieve()
+                .onStatus(HttpStatus::isError, error -> {
+                    throw new LoyaltyServiceNotAvailableException(error.statusCode().toString());
+                })
+                .bodyToMono(LoyaltyInfoResponse.class)
                 .onErrorMap(Throwable.class, error -> {
                     throw new GatewayErrorException(error.getMessage());
                 })
