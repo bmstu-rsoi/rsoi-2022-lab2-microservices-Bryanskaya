@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.bmstu.reservationapp.dto.CreateReservationRequest;
+import ru.bmstu.reservationapp.dto.ReservationDTO;
 import ru.bmstu.reservationapp.service.ReservationService;
 
 import java.util.UUID;
@@ -38,11 +38,14 @@ public class ReservationController {
                         UUID.fromString(reservationUid)));
     }
 
-    @PostMapping
-    public void createReservation(@RequestHeader(value = "X-User-Name") String username,
-                                @RequestBody CreateReservationRequest request) {
-        log.info(">>> Request to create reservation was caught (username={}; data={}).", username, request.toString());
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<?> postReservation(@RequestHeader(value = "X-User-Name") String username,
+                                             @RequestBody ReservationDTO reservationDTO) {
+        log.info(">>> RESERVATION: Request to post a new reservation for user={} was caught.", username);
 
-
+        ReservationDTO reservationDTO1 = reservationService.postReservation(username, reservationDTO);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(reservationDTO1);
     }
 }

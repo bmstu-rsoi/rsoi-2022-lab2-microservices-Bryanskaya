@@ -7,16 +7,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.bmstu.reservationapp.controller.converter.ResponseConverter;
 import ru.bmstu.reservationapp.dto.HotelResponse;
 import ru.bmstu.reservationapp.dto.PaginationResponse;
 import ru.bmstu.reservationapp.service.HotelService;
 
 import javax.websocket.server.PathParam;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 
 @Slf4j
@@ -24,15 +23,15 @@ import javax.websocket.server.PathParam;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/hotels")
 public class HotelController {
-    private final HotelService hotelsService;
+    private final HotelService hotelService;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<PaginationResponse> getHotels(@PathParam(value = "page") Integer page,
                                                      @PathParam(value = "size") Integer size) {
         log.info(">>> RESERVATION: Request to get all hotels was caught.");
 
         Pageable paging = PageRequest.of(page - 1, size);
-        Page<HotelResponse> hotelsResponsePage = hotelsService.getHotels(paging);
+        Page<HotelResponse> hotelsResponsePage = hotelService.getHotels(paging);
 
         PaginationResponse paginationResponse = ResponseConverter.toPaginationResponse(page, size, hotelsResponsePage);
         return ResponseEntity
@@ -46,6 +45,32 @@ public class HotelController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(hotelsService.getHotelByHotelId(hotelId));
+                .body(hotelService.getHotelByHotelId(hotelId));
+    }
+
+
+    @GetMapping(value = "/{hotelUid}/id", produces = "application/json")
+    public ResponseEntity<?> getHotelIdByHotelUid(@PathVariable UUID hotelUid) {
+        log.info(">>> RESERVATION: Request to get hotelId by hotelUid={} was caught.", hotelUid);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(hotelService.getHotelIdByHotelUid(hotelUid));
+    }
+
+
+    @GetMapping(value = "/{hotelUid}/price", produces = "application/json")
+    public ResponseEntity<Integer> getHotelDatePrice(@PathVariable UUID hotelUid,
+                                                     @PathParam(value = "startDate") Timestamp startDate,
+                                                     @PathParam(value = "endDate") Timestamp endDate) {
+        log.info(">>> Request to get reservation's price was caught, hotelUid={}, startDate={}; endDate={}).",
+                hotelUid, startDate, endDate);
+
+        Integer price = hotelService.getHotelDatePrice(hotelUid, startDate, endDate);
+        HttpStatus httpStatus = (price == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+
+        return ResponseEntity
+                .status(httpStatus)
+                .body(price);
     }
 }

@@ -10,10 +10,14 @@ import java.util.UUID;
 @Repository
 public interface HotelRepository extends JpaRepository<HotelEntity, Integer> {
     @Query(value = "SELECT * FROM hotels WHERE id = ?1",
-        nativeQuery = true)
+            nativeQuery = true)
     HotelEntity getHotelById(Integer hotelId);
 
     @Query(value = "SELECT * FROM hotels WHERE hotel_uid = ?1",
             nativeQuery = true)
     HotelEntity getHotelByUid(UUID hotelUid);
+
+    @Query(value = "SELECT id FROM hotels WHERE hotel_uid = ?1",
+            nativeQuery = true)
+    Integer getHotelIdByHotelUid(UUID hotelUid);
 }
