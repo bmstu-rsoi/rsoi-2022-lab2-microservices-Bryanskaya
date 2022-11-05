@@ -37,7 +37,11 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO postReservation(String username, ReservationDTO reservationDTO) {
         ReservationEntity reservationEntity = reservationRepository.save(ReservationConverter
                     .fromReservationDTOTOReservationEntity(reservationDTO, username));
-        ReservationDTO reservationDTO1 = ReservationConverter.fromReservationEntityToReservationDTO(reservationEntity);
-        return reservationDTO1;
+        return ReservationConverter.fromReservationEntityToReservationDTO(reservationEntity);
+    }
+
+    @Transactional
+    public void revokeReservation(String username, UUID reservationUid) {
+        reservationRepository.revokeReservation(username, reservationUid);
     }
 }

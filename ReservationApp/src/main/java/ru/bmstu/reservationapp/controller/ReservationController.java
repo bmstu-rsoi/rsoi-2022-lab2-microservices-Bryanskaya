@@ -29,13 +29,12 @@ public class ReservationController {
 
     @GetMapping(value = "/{reservationUid}", produces = "application/json")
     public ResponseEntity<?> getReservationsByUsernameReservationUid(@RequestHeader(value = "X-User-Name") String username,
-                                                                     @PathVariable(value = "reservationUid") String reservationUid) {
+                                                                     @PathVariable(value = "reservationUid") UUID reservationUid) {
         log.info(">>> RESERVATION: Request to get all reservations by username and reservationUid was caught.");
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(reservationService.getReservationsByUsernameReservationUid(username,
-                        UUID.fromString(reservationUid)));
+                .body(reservationService.getReservationsByUsernameReservationUid(username, reservationUid));
     }
 
     @PostMapping(produces = "application/json")
@@ -43,9 +42,17 @@ public class ReservationController {
                                              @RequestBody ReservationDTO reservationDTO) {
         log.info(">>> RESERVATION: Request to post a new reservation for user={} was caught.", username);
 
-        ReservationDTO reservationDTO1 = reservationService.postReservation(username, reservationDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(reservationDTO1);
+                .body(reservationService.postReservation(username, reservationDTO));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/{reservationUid}")
+    public void revokeReservation(@RequestHeader(value = "X-User-Name") String username,
+                                  @PathVariable(value = "reservationUid") UUID reservationUid) {
+        log.info(">>> RESERVATION: Request to revoke reservation was caught (username={}; reservationUid={}).", username, reservationUid);
+
+        reservationService.revokeReservation(username, reservationUid);
     }
 }
