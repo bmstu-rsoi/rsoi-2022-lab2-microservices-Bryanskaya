@@ -26,6 +26,8 @@ import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static ru.bmstu.gateway.dto.converter.UserInfoResponseConverter.createUserInfoResponse;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
@@ -62,10 +64,49 @@ public class GatewayController {
                 .block();
     }
 
+    @GetMapping(value = "/me", produces = "application/json")
+    public ResponseEntity<?> getUserInfo(@RequestHeader(value = "X-User-Name") String username) {
+        log.info(">>> GATEWAY: Request to get all reservations by current username={} was caught.", username);
+
+        ArrayList<ReservationResponse> reservationResponseList = _getReservationsList(username);
+        LoyaltyInfoResponse loyaltyInfoResponse = _getLoyaltyInfoResponseByUsername(username);
+
+        return ResponseEntity
+                .ok()
+                .body(createUserInfoResponse(reservationResponseList, loyaltyInfoResponse));
+
+    }
+
+    private LoyaltyInfoResponse _getLoyaltyInfoResponseByUsername(String username) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(appParams.pathLoyalty + "/user")
+                        .port(appParams.portLoyalty)
+                        .build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("X-User-Name", username)
+                .retrieve()
+                .onStatus(HttpStatus::isError, error -> {
+                    throw new LoyaltyServiceNotAvailableException(error.statusCode().toString());
+                })
+                .bodyToMono(LoyaltyInfoResponse.class)
+                .onErrorMap(Throwable.class, error -> {
+                    throw new GatewayErrorException(error.getMessage());
+                })
+                .block();
+    }
+
     @GetMapping(value = "/reservations", produces = "application/json")
     public ResponseEntity<?> getReservationsByUsername(@RequestHeader(value = "X-User-Name") String username) {
         log.info(">>> GATEWAY: Request to get all reservations by username={} was caught.", username);
 
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(_getReservationsList(username));
+    }
+
+    private ArrayList<ReservationResponse> _getReservationsList(String username) {
         ReservationDTO[] reservationArr = _getReservationsArrByUsername(username);
         if (reservationArr == null)
             throw new ReservationByUsernameNotFoundException(username);
@@ -74,9 +115,7 @@ public class GatewayController {
         for (ReservationDTO reservation: reservationArr)
             reservationResponseList.add(_getReservationResponse(reservation));
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(reservationResponseList);
+        return reservationResponseList;
     }
 
     @GetMapping(value = "/reservations/{reservationUid}", produces = "application/json")
