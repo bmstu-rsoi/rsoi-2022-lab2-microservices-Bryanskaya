@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.bmstu.loyaltyapp.dto.LoyaltyIntoResponse;
+import ru.bmstu.loyaltyapp.dto.enums.StatusEnum;
 import ru.bmstu.loyaltyapp.service.LoyaltyService;
+
+import javax.websocket.server.PathParam;
 
 @Slf4j
 @RestController
@@ -19,11 +20,30 @@ public class LoyaltyController {
     private final LoyaltyService loyaltyService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<?> getStatusByUsername(@RequestHeader(value = "X-User-Name") String username) {
+    public ResponseEntity<?> getDiscountByUsername(@RequestHeader(value = "X-User-Name") String username) {
         log.info(">>> LOYALTY: Request to get username's={} loyalty status was caught.", username);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(loyaltyService.getStatusByUsername(username));
+                .body(loyaltyService.getDiscountByUsername(username));
+    }
+
+    @GetMapping(value = "/update", produces = "application/json")
+    public ResponseEntity<Integer> getReservationUpdatedPrice(@PathParam(value = "price") Integer price,
+                                                        @PathParam(value = "discount") Integer discount) {
+        log.info(">>> LOYALTY: Request to get updated price was caught.");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loyaltyService.getReservationUpdatedPrice(price, discount));
+    }
+
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<LoyaltyIntoResponse> updateReservationCount(@RequestHeader(value = "X-User-Name") String username) {
+        log.info(">>> LOYALTY: Request to update reservation count got user={} was caught.", username);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loyaltyService.updateReservationCount(username));
     }
 }

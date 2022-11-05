@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "loyalties")
+@Table(name = "loyalty")
 @Accessors(chain = true)
 @NoArgsConstructor
 public class LoyaltyEntity {
@@ -24,13 +24,13 @@ public class LoyaltyEntity {
 
     @NonNull
     @Column(name = "reservation_count")
-    private Integer reservation_count = 0;
+    private Integer reservationCount = 0;
 
     @NonNull
     @Column(name = "status")
-    private StatusEnum status = StatusEnum.BRONZE;
+    private String status = StatusEnum.BRONZE.name();
 
     @NonNull
     @Column(name = "discount")
-    private Integer discount;
+    private Integer discount = 5;
 }
