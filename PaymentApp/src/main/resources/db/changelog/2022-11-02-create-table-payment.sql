@@ -1,4 +1,4 @@
-CREATE TABLE payment
+CREATE TABLE IF NOT EXISTS payment
 (
     id          SERIAL PRIMARY KEY,
     payment_uid uuid        NOT NULL,
