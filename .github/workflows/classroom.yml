@@ -30,7 +30,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ReservationApp/gradlew
       - name: Build with Gradle
-        run: ReservationApp/gradlew --include-build ReservationApp/build
+        run: ReservationApp/gradlew --include-build ReservationApp build
         
       # Loyalty
       - name: Grant execute permission for gradlew
