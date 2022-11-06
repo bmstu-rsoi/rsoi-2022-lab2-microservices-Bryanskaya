@@ -30,25 +30,25 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ReservationApp/gradlew
       - name: Build with Gradle
-        run: ReservationApp/gradlew build
+        run: ReservationApp/gradlew --include-build ReservationApp/build
         
       # Loyalty
       - name: Grant execute permission for gradlew
         run: chmod +x LoyaltyApp/gradlew
       - name: Build with Gradle
-        run: LoyaltyApp/gradlew build
+        run: LoyaltyApp/gradlew --include-build LoyaltyApp/build
         
       # Payment
       - name: Grant execute permission for gradlew
         run: chmod +x PaymentApp/gradlew
       - name: Build with Gradle
-        run: PaymentApp/gradlew build
+        run: PaymentApp/gradlew --include-build PaymentApp/build
         
       # Payment
       - name: Grant execute permission for gradlew
         run: chmod +x Gateway/gradlew
       - name: Build with Gradle
-        run: Gateway/gradlew build
+        run: Gateway/gradlew --include-build Gateway/build
 
       - name: Build images
         timeout-minutes: 10
