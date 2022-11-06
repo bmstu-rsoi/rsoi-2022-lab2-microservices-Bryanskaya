@@ -1,3 +1,9 @@
+host:
+  service:
+    hotel: "reservationapp"
+    loyalty: "loyaltyapp"
+    payment: "paymentapp"
+
 path:
   service:
     hotel: "api/v1/hotels"
