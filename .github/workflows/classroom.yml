@@ -26,11 +26,29 @@ jobs:
       - name: set up gradle
         uses: gradle/gradle-build-action@v2
             
+      # Reservation
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-        
+        run: chmod +x ReservationApp/gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ReservationApp/gradlew build
+        
+      # Loyalty
+      - name: Grant execute permission for gradlew
+        run: chmod +x LoyaltyApp/gradlew
+      - name: Build with Gradle
+        run: LoyaltyApp/gradlew build
+        
+      # Payment
+      - name: Grant execute permission for gradlew
+        run: chmod +x PaymentApp/gradlew
+      - name: Build with Gradle
+        run: PaymentApp/gradlew build
+        
+      # Payment
+      - name: Grant execute permission for gradlew
+        run: chmod +x Gateway/gradlew
+      - name: Build with Gradle
+        run: Gateway/gradlew build
 
       - name: Build images
         timeout-minutes: 10
