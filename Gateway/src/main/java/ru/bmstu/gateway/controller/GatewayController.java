@@ -73,7 +73,7 @@ public class GatewayController {
         LoyaltyInfoResponse loyaltyInfoResponse = _getLoyaltyInfoResponseByUsername(username);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(createUserInfoResponse(reservationResponseList, loyaltyInfoResponse));
 
     }
@@ -104,7 +104,7 @@ public class GatewayController {
         log.info(">>> GATEWAY: Request to get all reservations by username={} was caught.", username);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(_getReservationsList(username));
     }
 
@@ -130,7 +130,7 @@ public class GatewayController {
             throw new ReservationByUsernameReservationUidNotFoundException(username, reservationUid);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(_getReservationResponse(reservation));
     }
 
@@ -249,7 +249,7 @@ public class GatewayController {
                         loyaltyInfoResponse.getDiscount(), PaymentConverter.fromPaymentDTOToPaymentInfo(paymentDTO));
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(createReservationResponse);
     }
 
@@ -489,7 +489,7 @@ public class GatewayController {
     @GetMapping(value = "/loyalty", produces = "application/json")
     public ResponseEntity<?> getLoyaltyInfoResponseByUsername(@RequestHeader(value = "X-User-Name") String username) {
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(_getLoyaltyInfoResponseByUsername(username));
     }
 }
