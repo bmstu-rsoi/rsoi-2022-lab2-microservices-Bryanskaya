@@ -27,32 +27,32 @@ jobs:
         uses: gradle/gradle-build-action@v2
             
       # Reservation
-      #- name: Grant execute permission for gradlew
-      #  run: chmod +x ReservationApp/gradlew
-      #- name: Build with Gradle
-      #  run: ReservationApp/gradlew --include-build ReservationApp build
+      - name: Grant execute permission for gradlew
+        run: cd ReservationApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd ReservationApp && ./gradlew build
         
       # Loyalty
-      #- name: Grant execute permission for gradlew
-      #  run: chmod +x LoyaltyApp/gradlew
-      #- name: Build with Gradle
-      #  run: LoyaltyApp/gradlew --include-build LoyaltyApp/build
+      - name: Grant execute permission for gradlew
+        run: cd LoyaltyApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd LoyaltyApp && ./gradlew build
         
       # Payment
-      #- name: Grant execute permission for gradlew
-      #  run: chmod +x PaymentApp/gradlew
-      #- name: Build with Gradle
-      #  run: PaymentApp/gradlew --include-build PaymentApp/build
+      - name: Grant execute permission for gradlew
+        run: cd PaymentApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd PaymentApp && ./gradlew build
         
       # Payment
-      #- name: Grant execute permission for gradlew
-      #  run: chmod +x Gateway/gradlew
-      #- name: Build with Gradle
-      #  run: Gateway/gradlew --include-build Gateway/build
+      - name: Grant execute permission for gradlew
+        run: cd Gateway && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd Gateway && ./gradlew build
 
-      #- name: Build images
-       # timeout-minutes: 10
-        #run: docker compose build
+      - name: Build images
+        timeout-minutes: 10
+        run: docker compose build
 
       - name: Run containers
         timeout-minutes: 5
