@@ -17,7 +17,38 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
-      # TODO build and run unit tests
+      - name: set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+            java-version: 17
+            cache: gradle
+            
+      - name: set up gradle
+        uses: gradle/gradle-build-action@v2
+            
+      # Reservation
+      - name: Grant execute permission for gradlew
+        run: cd ReservationApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd ReservationApp && ./gradlew build
+        
+      # Loyalty
+      - name: Grant execute permission for gradlew
+        run: cd LoyaltyApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd LoyaltyApp && ./gradlew build
+        
+      # Payment
+      - name: Grant execute permission for gradlew
+        run: cd PaymentApp && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd PaymentApp && ./gradlew build
+        
+      # Payment
+      - name: Grant execute permission for gradlew
+        run: cd Gateway && chmod +x gradlew
+      - name: Build with Gradle
+        run: cd Gateway && ./gradlew build
 
       - name: Build images
         timeout-minutes: 10
@@ -29,14 +60,13 @@ jobs:
           docker compose up -d
           ./scripts/wait-script.sh
         env:
-          - WAIT_PORTS=8080,8070,8060,8050
+          WAIT_PORTS: 8080,8070,8060,8050
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
         with:
-          # TODO insert your variant
-          collection: <variant>/postman/collection.json
-          environment: <variant>/postman/environment.json
+          collection: v2/postman/collection.json
+          environment: v2/postman/environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
 
