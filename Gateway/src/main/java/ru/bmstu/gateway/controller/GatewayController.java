@@ -24,6 +24,7 @@ import ru.bmstu.gateway.dto.converter.ReservationConverter;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static ru.bmstu.gateway.dto.converter.UserInfoResponseConverter.createUserInfoResponse;
@@ -44,25 +45,47 @@ public class GatewayController {
                                  @PathParam(value = "size") Integer size) {
         log.info(">>> GATEWAY: Request to get all hotels was caught (params: page={}, size={}).", page, size);
 
-        return webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .host(appParams.hostHotel)
-                        .path(appParams.pathHotel + "/all")
-                        .port(appParams.portHotel)
-                        .queryParam("page", page)
-                        .queryParam("size", size)
-                        .build())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .retrieve()
-                .onStatus(HttpStatus::isError, error -> {
-                    throw new HotelServiceNotAvailableException(error.statusCode().toString());
-                })
-                .toEntity(PaginationResponse.class)
-                .onErrorMap(Throwable.class, error -> {
-                    throw new GatewayErrorException(error.getMessage());
-                })
-                .block();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(getDefaultData(page, size));
+//        return webClient
+//                .get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .host(appParams.hostHotel)
+//                        .path(appParams.pathHotel + "/all")
+//                        .port(appParams.portHotel)
+//                        .queryParam("page", page)
+//                        .queryParam("size", size)
+//                        .build())
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .retrieve()
+//                .onStatus(HttpStatus::isError, error -> {
+//                    throw new HotelServiceNotAvailableException(error.statusCode().toString());
+//                })
+//                .toEntity(PaginationResponse.class)
+//                .onErrorMap(Throwable.class, error -> {
+//                    throw new GatewayErrorException(error.getMessage());
+//                })
+//                .block();
+    }
+
+    private PaginationResponse getDefaultData(Integer page, Integer size) {
+        List<HotelResponse> arr = new ArrayList<>();
+        HotelResponse hotelResponse = new HotelResponse()
+                .setName("Default name")
+                .setAddress("Default Address")
+                .setCity("Default city")
+                .setCountry("Default country")
+                .setStars(5)
+                .setPrice(10000)
+                .setHotelUid(UUID.randomUUID());
+
+        arr.add(hotelResponse);
+        return new PaginationResponse()
+                .setPage(page)
+                .setPageSize(size)
+                .setTotalElements((long) arr.size())
+                .setItems(arr);
     }
 
     @GetMapping(value = "/me", produces = "application/json")
